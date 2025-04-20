@@ -5,60 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Document</title>
 </head>
-
+<body>
 @if(auth()->check())
-
     <x-app-layout>
         <x-slot name="header">
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                {{ __('Products') }}
+                {{ __('Contact') }}
             </h2>
         </x-slot>
         <div>
-            @if(session()->has('success'))
-                <div>
-                    {{session('success')}}
-                </div>
-            @endif
-        </div>
-        <div>
-            <div>
-                <a class="text-blue-500" href="{{route('product.create')}}">Create a new product</a>
-            </div>
             <table>
                 <tr>
-                    <th>Name</th>
-                    <th>QTY</th>
-                    <th>Price</th>
+                    <th>Title</th>
                     <th>Description</th>
+                    <th>Created at</th>
                 </tr>
-                @foreach($products as $product)
+                @foreach($forms as $form)
                     <tr>
-                        <td>{{$product->name}}</td>
-                        <td>{{$product->qty}}</td>
-                        <td>{{$product->price}}</td>
-                        <td>{{$product->description}}</td>
-                        @if(auth()->check())
-                            <td><a class="text-blue-500" href="{{route('product.edit', $product)}}">Edit</a></td>
-                            <td>
-                                <form method="post" action="{{route('product.destroy', $product)}}">
-                                    @csrf
-                                    @method('delete')
-                                    <button class="text-white bg-red-600 dark:active:text-gray-300 p-2 rounded"
-                                            type="submit">
-                                        Delete
-                                    </button>
-                                </form>
-                            </td>
-                        @endif
+                        <td>{{$form->title}}</td>
+                        <td>{{$form->description}}</td>
+                        <td>{{$form->created_at}}</td>
                     </tr>
                 @endforeach
             </table>
         </div>
     </x-app-layout>
-
 @else
-    <body>
     <header class="w-full lg:max-w-4xl max-w-[335px] text-sm mb-6 not-has-[nav]:hidden">
         @if (Route::has('login'))
             <nav class="flex items-center justify-end gap-4">
@@ -89,27 +61,19 @@
         @endif
     </header>
     <br>
-    <a href="{{route('contact.index')}}">Contact us!</a>
+    <a href="{{route('product.index')}}">See products</a>
     <br>
-    <br>
-    <div>
-        <table>
-            <tr>
-                <th>Name</th>
-                <th>QTY</th>
-                <th>Price</th>
-                <th>Description</th>
-            </tr>
-            @foreach($products as $product)
-                <tr>
-                    <td>{{$product->name}}</td>
-                    <td>{{$product->qty}}</td>
-                    <td>{{$product->price}}</td>
-                    <td>{{$product->description}}</td>
-                </tr>
-            @endforeach
-        </table>
-    </div>
-    </body>
+    <p class="text-2xl">Contact</p>
+    <form method="post" action="{{route('contact.store')}}">
+        @csrf
+        @method('post')
+        <input type="text" name="title" placeholder="Title" maxlength="30" minlength="5" required/>
+        <input type="text" name="description" placeholder="Description" maxlength="255" minlength="10" required/>
+        <button class="text-white bg-red-600 dark:active:text-gray-300 p-2 rounded"
+                type="submit">
+            Submit form
+        </button>
+    </form>
 @endif
+</body>
 </html>
